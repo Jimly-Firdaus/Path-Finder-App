@@ -1,4 +1,5 @@
 import numpy as np
+from math import radians, sin, cos, sqrt, atan2
 
 def parse_file(filename):
     with open(filename, 'r') as f:
