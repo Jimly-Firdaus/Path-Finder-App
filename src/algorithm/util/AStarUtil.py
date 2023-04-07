@@ -7,11 +7,18 @@ class AStarNode:
         self.x = x_pos
         self.y = y_pos
     
-    # heuristic goal
+    #  Heuristic for A* algorithm.
+    #  @param x_goal x coordinate (integer).
+    #  @param y_goal y coordinate (integer).
+    #  @return total cost from node-to-goal
     def find_cost_to_goal(self, x_goal, y_goal):
         p1 = np.array([self.x, self.y])
         p2 = np.array([x_goal, y_goal])
         return np.linalg.norm(p2 - p1)
 
+    #  Heuristic for A* algorithm.
+    #  @param x_goal x coordinate (integer).
+    #  @param y_goal y coordinate (integer).
+    #  @return total cost from root-to-node-to-goal
     def find_total_cost(self, x_goal, y_goal):
         return self.node_total_cost + self.find_cost_to_goal(self, x_goal, y_goal)
