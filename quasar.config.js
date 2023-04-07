@@ -10,7 +10,8 @@
 
 
 const { configure } = require('quasar/wrappers');
-
+// const UnoCSS = require('@unocss/webpack').default
+// const presetUno = require('@unocss/preset-uno').default
 
 module.exports = configure(function (/* ctx */) {
   return {
@@ -30,13 +31,12 @@ module.exports = configure(function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: [
-      
-      
+
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: [
-      'app.scss'
+      'app.scss', 'tailwind.css'
     ],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
@@ -83,6 +83,13 @@ module.exports = configure(function (/* ctx */) {
       // vitePlugins: [
       //   [ 'package-name', { ..options.. } ]
       // ]
+      // extendWebpack (cfg) {
+      //   cfg.plugins.push(UnoCSS({
+      //     presets: [
+      //       presetUno()
+      //     ]
+      //   }))
+      // },
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
