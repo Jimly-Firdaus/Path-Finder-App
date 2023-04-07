@@ -1,5 +1,5 @@
 from algorithm.AStar import AStar
-from algorithm.util.Parser import parse_file
+from algorithm.util.Utility import parse_file
 
 def main():
     total_nodes, nodes, adjacency_matrix = parse_file('test_parser.txt')
