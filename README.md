@@ -1,6 +1,6 @@
-# Tucil 3 Stima (tucil3stima)
+# Tucil3_13521102_13521140
 
-Pathfinding with UCS and A star algorithm
+Pathfinding with UCS and A* algorithm
 
 ## Install the dependencies
 ```bash
