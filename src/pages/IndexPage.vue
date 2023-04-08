@@ -34,6 +34,7 @@ const getFile = () => {
       // do something with the text
       const response = await axios.post('http://localhost:5000/solve', text);
       const result = response.data;
+      console.log(result);
     };
     reader.readAsText(file.value);
   }
