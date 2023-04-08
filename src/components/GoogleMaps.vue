@@ -91,10 +91,15 @@ const pathToGoal = ref({
   strokeWeight: 2,
 });
 const map = ref<InstanceType<typeof GoogleMap>>();
+const polyline = ref<InstanceType<typeof google.maps.Polyline>>();
 watch(
   [() => centerVal.value, () => pathToGoal.value.path],
   () => {
     console.log("-------------------------")
+    if (polyline.value) {
+      pathToGoal.value.path = path.value;
+      polyline.value.setOptions(pathToGoal.value);
+    }
     // Update the map center
     map.value?.map?.panTo(centerVal.value);
   }
