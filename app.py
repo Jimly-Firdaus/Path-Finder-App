@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from src.main import main
 from flask_cors import CORS
 
@@ -15,7 +15,9 @@ def solve():
     text = data['text']
     src = data['src']
     dest = data['dest']
-    return main(text, src, dest)
+    cost, route = main(text, src, dest)
+    result = (cost, route)
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run()
