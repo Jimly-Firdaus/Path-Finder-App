@@ -12,6 +12,6 @@ def main(text: str):
 
     print("Solve for A Star")
     a_star = AStar(adjacency_matrix, total_nodes, nodes)
-    a_star.solve("dest_1", "dest_5")
+    a_star.solve("bolu_meranti", "methodist_3")
     return a_star.get_result_route()
 

@@ -14,8 +14,7 @@ def solve():
     print(request.data.decode('utf-8'))
     text = request.data.decode('utf-8')
     print(text)
-    # main(text)
-    return "Hello World"
+    return main(text)
 
 if __name__ == '__main__':
     app.run()
