@@ -13,7 +13,7 @@ def index():
 def solve():
     text = request.data.decode('utf-8')
     print(text)
-    main(text)
+    # main(text)
 
 if __name__ == '__main__':
     app.run()
