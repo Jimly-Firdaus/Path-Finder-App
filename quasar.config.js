@@ -78,18 +78,6 @@ module.exports = configure(function (/* ctx */) {
 
       // extendViteConf (viteConf) {},
       // viteVuePluginOptions: {},
-
-      
-      // vitePlugins: [
-      //   [ 'package-name', { ..options.. } ]
-      // ]
-      // extendWebpack (cfg) {
-      //   cfg.plugins.push(UnoCSS({
-      //     presets: [
-      //       presetUno()
-      //     ]
-      //   }))
-      // },
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
