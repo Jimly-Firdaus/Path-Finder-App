@@ -13,8 +13,8 @@ def index():
 def solve():
     data = request.json
     text = data['text']
-    src = data['src']
-    dest = data['dest']
+    src = data['src'].strip()
+    dest = data['dest'].strip()
     print(f"src: ----{src}----")
     print(f"dest: ----{dest}----")
     cost, route = main(text, str(src), str(dest))
