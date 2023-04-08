@@ -1,42 +1,18 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <example-component
-      title="Example component"
-      active
-      :todos="todos"
-      :meta="meta"
-    ></example-component>
+  <q-page class="row items-center tw-px-2">
+    <BaseCard
+    shadow
+    :border-width="2"
+    class="tw-p-2 tw-w-1/2"
+    >
+    <h1>
+      Welcome to our route planning website! Our UCS and A* algorithm helps you find the shortest path between two locations using real-time data from Google Maps. Simply enter your starting and destination points and let our algorithm do the rest. With our website, you can save time and effort by always taking the most efficient route.
+    </h1>
+  </BaseCard>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { Todo, Meta } from 'components/models';
-import ExampleComponent from 'components/ExampleComponent.vue';
-import { ref } from 'vue';
 
-const todos = ref<Todo[]>([
-  {
-    id: 1,
-    content: 'ct1'
-  },
-  {
-    id: 2,
-    content: 'ct2'
-  },
-  {
-    id: 3,
-    content: 'ct3'
-  },
-  {
-    id: 4,
-    content: 'ct4'
-  },
-  {
-    id: 5,
-    content: 'ct5'
-  }
-]);
-const meta = ref<Meta>({
-  totalCount: 1200
-});
+
 </script>
