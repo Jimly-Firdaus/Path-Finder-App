@@ -1,5 +1,5 @@
 import numpy as np
-from algorithm.util.Utility import d_haversine
+from src.algorithm.util.Utility import d_haversine
 
 class AStarNode:
     def __init__(self, path_to_current_node, total_cost_to_this_node, node_pos, current_node_number, reliased_cost):

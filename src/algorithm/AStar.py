@@ -1,7 +1,7 @@
 import numpy as np
-from algorithm.util.interface.IAStar import IAStar
-from algorithm.util.AStarUtil import AStarNode
-from algorithm.util.Utility import d_haversine
+from src.algorithm.util.interface.IAStar import IAStar
+from src.algorithm.util.AStarUtil import AStarNode
+from src.algorithm.util.Utility import d_haversine
 import heapq
 
 # need : adjacency matrix for mapping
