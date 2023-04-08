@@ -11,10 +11,11 @@ def index():
 
 @app.route('/solve', methods=['POST'])
 def solve():
-    print(request.data.decode('utf-8'))
-    text = request.data.decode('utf-8')
-    print(text)
-    return main(text)
+    data = request.json
+    text = data['text']
+    src = data['src']
+    dest = data['dest']
+    return main(text, src, dest)
 
 if __name__ == '__main__':
     app.run()
