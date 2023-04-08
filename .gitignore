@@ -1,4 +1,6 @@
 Makefile
+node_modules
+.quasar
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
