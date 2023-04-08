@@ -32,7 +32,7 @@ const getFile = () => {
     reader.onload = async (event) => {
       const text = event.target?.result;
       // do something with the text
-      const response = await axios.post('/solve', text);
+      const response = await axios.post('http://localhost:5000/solve', text);
       const result = response.data;
     };
     reader.readAsText(file.value);
