@@ -1,8 +1,8 @@
 <template>
   <GoogleMap
     ref="map"
-    api-key="AIzaSyBLrkK67ZokwGfK6v64zcbhpon6jZ757YU"
-    style="width: 100%; height: 500px"
+    api-key="AIzaSyBLrkK67ZokwGfK6v64zcbhpon6jZ757YUxx"
+    style="width: 100%; height: 25em"
     :center="centerVal"
     :zoom="15"
   >
@@ -24,10 +24,12 @@
       }"
       @dragend="updateGoalPos"
     />
-    <Polyline ref="polyline" :options="pathToGoal" />
+    <template v-if="foundPath">
+      <Polyline :options="pathToGoal" />
+    </template>
   </GoogleMap>
-  <BaseBtn label="CheckPos" size="md" @click="checkPos" />
-  <BaseBtn label="Check Arr" size="md" @click="checkArr" />
+  <BaseBtn label="Update Map" size="md" @click="updateMap" />
+  <!-- <BaseBtn label="Check Arr" size="md" @click="checkArr" /> -->
 </template>
 
 <script setup lang="ts">
@@ -50,10 +52,14 @@ const props = defineProps({
     type: Object as PropType<{ lat: number; lng: number }>,
     required: true,
   },
+  foundRoute: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 console.log('props.path:', props.path);
-
+const foundPath = ref(props.foundRoute);
 const centerVal = ref(props.center);
 
 const marker1 = ref({ lat: -6.9174639, lng: 107.6191228 });
@@ -95,30 +101,18 @@ const polyline = ref<InstanceType<typeof google.maps.Polyline>>();
 watch(
   [() => centerVal.value, () => pathToGoal.value.path],
   () => {
+    console.log(props.foundRoute);
+    pathToGoal.value.path = path.value;
+    console.log(pathToGoal.value.path);
     console.log("-------------------------")
-    if (polyline.value) {
-      pathToGoal.value.path = path.value;
-      polyline.value.setOptions(pathToGoal.value);
-    }
+    foundPath.value = props.foundRoute;
     // Update the map center
     map.value?.map?.panTo(centerVal.value);
   }
 );
 
-const checkPos = async () => {
-  console.log('start: ' + marker1.value.lat + ', ' + marker1.value.lng);
-  console.log('goal: ' + +marker2.value.lat + ', ' + marker2.value.lng);
-  console.log('center: ' + props.center.lat + ', ' + props.center.lng);
-  console.log('path: ' + pathToGoal.value.path);
-  console.log('props: ' + props.path.values);
-  // path.value.length = props.path.length;
-  // props.path.forEach((ele, index) => {
-  //   console.log(ele.latitude + ', ' + ele.longitude);
-  //   path.value[index] = {
-  //     lat: ele.latitude,
-  //     lng: ele.longitude,
-  //   };
-  // });
+const updateMap = () => {
+  // just to reflect all async changes to sync child with parent
   centerVal.value = props.center;
 };
 
