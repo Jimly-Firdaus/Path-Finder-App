@@ -32,7 +32,9 @@ const getFile = () => {
     reader.onload = async (event) => {
       const text = event.target?.result;
       // do something with the text
-      const response = await axios.post('http://localhost:5000/solve', text);
+      const response = await axios.post('http://localhost:5000/solve', text, {
+        headers: { 'Content-Type': 'text/plain' },
+      });
       const result = response.data;
       console.log(result);
     };
