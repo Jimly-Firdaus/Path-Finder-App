@@ -12,6 +12,7 @@ def index():
 @app.route('/solve', methods=['POST'])
 def solve():
     text = request.data.decode('utf-8')
+    print(text)
     main(text)
 
 if __name__ == '__main__':
