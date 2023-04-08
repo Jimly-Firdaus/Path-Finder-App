@@ -35,7 +35,7 @@ class AStar(IAStar):
         # search starting node data
         starting_node = 0
         for name, pos in self.nodes:
-            if (name == start_node):
+            if (name == str(start_node)):
                 root_position["latitude"] = pos[0]
                 root_position["longitude"] = pos[1]
                 break
@@ -44,7 +44,7 @@ class AStar(IAStar):
         # search goal node data
         goal_node = 0
         for name, pos in self.nodes:
-            if (name == _goal_node):
+            if (name == str(_goal_node)):
                 goal_position["latitude"] = pos[0]
                 goal_position["longitude"] = pos[1]
                 break
