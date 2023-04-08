@@ -15,6 +15,8 @@ def solve():
     text = data['text']
     src = data['src']
     dest = data['dest']
+    print(f"src: {src}")
+    print(f"dest: {dest}")
     cost, route = main(text, src, dest)
     result = (cost, route)
     return jsonify(result)
