@@ -38,27 +38,34 @@
       />
     </div>
     <BaseBtn label="Find!" @click="getFile"> </BaseBtn>
+    <div>{{ wait }}</div>
     <!-- Test Map here -->
-    <GoogleMaps />
+    <GoogleMaps :path="pathRetrieved" :center="center" />
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watchEffect, watch, Ref } from 'vue';
 import axios from 'axios';
+import { Path } from 'src/composables';
+import { useStore } from 'vuex';
+
+const store = useStore();
 
 const file = ref<File | null>(null);
-const source = ref<string | null>(null);
-const dest = ref<string | null>(null);
+const source = ref<string>('');
+const dest = ref<string>('');
 const mapData = ref<string[]>([]);
+
 const destOption = computed(() =>
   mapData.value.filter((item) => item !== source.value)
 );
 
 const updateDestOption = () => {
-  dest.value = null;
+  dest.value = '';
 };
 
+let allPosition: Path[] = [];
 const handleFileUpload = (file: File) => {
   if (file) {
     const reader = new FileReader();
@@ -69,22 +76,60 @@ const handleFileUpload = (file: File) => {
         (_, index) =>
           index > 0 && index % 2 !== 0 && index < parseInt(lines[0]) * 2
       );
+      for (let i = 1; i <= parseInt(lines[0]); i++) {
+        const latLongLine = lines[i * 2];
+        const latLong = latLongLine.split(' ').map((x) => parseFloat(x));
+        allPosition.push({ latitude: latLong[0], longitude: latLong[1] });
+      }
     };
     reader.readAsText(file);
+    console.log(allPosition);
   }
 };
+
+const pathRetrieved = ref<Path[]>([]);
+const route = ref<number[]>([]);
+const cost = ref<number>();
+
+const center = ref(
+  pathRetrieved.value.length > 0
+    ? {
+        lat: pathRetrieved.value[0].latitude,
+        lng: pathRetrieved.value[0].longitude,
+      }
+    : { lat: -6.9174639, lng: 107.61912280000001 }
+);
+
+watch(
+  () => pathRetrieved.value,
+  (newPath) => {
+    if (newPath.length > 0) {
+      center.value = {
+        lat: newPath[0].latitude,
+        lng: newPath[0].longitude,
+      };
+    } else {
+      center.value = { lat: -6.9174639, lng: 107.61912280000001 };
+    }
+  }
+);
+
+watchEffect(() => {
+  pathRetrieved.value;
+  console.log(center.value);
+});
+
+const wait = ref("Waiting");
 
 const getFile = () => {
   if (file.value) {
     const reader = new FileReader();
     reader.onload = async (event) => {
       const text = event.target?.result as string;
-      console.log(source.value);
-      console.log(dest.value);
       const data = {
         text,
-        src: source.value,
-        dest: dest.value,
+        src: source.value.toString(),
+        dest: dest.value.toString(),
       };
       const response = await axios.post(
         'http://localhost:5000/solve',
@@ -94,10 +139,24 @@ const getFile = () => {
         }
       );
       const result = response.data;
-      console.log(result);
+      route.value = result[1].split('-').map((x: any) => parseInt(x));
+      cost.value = result[0];
+      pathRetrieved.value = [];
+      console.log("route: " + route.value);
+      mapData.value.forEach((ele, index) => {
+        if (route.value.includes(index)) {
+          console.log(index);
+          pathRetrieved.value.push(allPosition[index]);
+        }
+      });
+      center.value.lat = pathRetrieved.value[0].latitude;
+      center.value.lng = pathRetrieved.value[0].longitude;
+      wait.value = "Finished";
+      console.log("Filled arr: ");
+      console.log(pathRetrieved.value);
+      store.dispatch('updatePathRetrieved', pathRetrieved);
     };
     reader.readAsText(file.value);
   }
-  console.log(file.value);
 };
 </script>
