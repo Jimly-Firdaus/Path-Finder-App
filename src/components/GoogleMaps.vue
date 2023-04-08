@@ -35,10 +35,6 @@ import {
   Marker as GoogleMapMarker,
   Polyline,
 } from 'vue3-google-map';
-import {
-  startMarker as startIcon,
-  goalMarker as goalIcon,
-} from 'src/composables/marker';
 import { MapMouseEvent } from 'google.maps';
 // import { snapToRoads } from '@googlemaps/roads';
 
@@ -95,15 +91,15 @@ const checkPos = () => {
   console.log('goal: ' + +marker2.value.lat + ', ' + marker2.value.lng);
 };
 
-const startMarker = {
-  url: startIcon,
-  scaledSize: new google.maps.Size(25, 25),
-};
+// const startMarker = {
+//   url: startIcon,
+//   scaledSize: new google.maps.Size(25, 25),
+// };
 
-const goalMarker = {
-  url: goalIcon,
-  scaledSize: new google.maps.Size(25, 25),
-};
+// const goalMarker = {
+//   url: goalIcon,
+//   scaledSize: new google.maps.Size(25, 25),
+// };
 
 defineComponent({
   components: {
