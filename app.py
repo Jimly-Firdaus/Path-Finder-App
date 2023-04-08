@@ -11,6 +11,7 @@ def index():
 
 @app.route('/solve', methods=['POST'])
 def solve():
+    print(request.data.decode('utf-8'))
     text = request.data.decode('utf-8')
     print(text)
     # main(text)
