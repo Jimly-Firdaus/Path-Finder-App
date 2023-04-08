@@ -90,3 +90,4 @@ class AStar(IAStar):
     def get_result_route(self):
         print("Cost: " + str(self.result_node))
         print("Route: " + self.final_route)
+        return (str(self.result_node), self.final_route)
