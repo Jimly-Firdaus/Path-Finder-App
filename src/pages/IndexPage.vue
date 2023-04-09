@@ -1,14 +1,31 @@
 <template>
-  <q-page class="row items-center tw-px-2 bg-grey-3 justify-center tw-gap-4">
+  <q-page class="row items-center tw-p-2 bg-grey-3 justify-center tw-gap-4">
     <BaseCard shadow :border-width="2" class="tw-p-2 tw-w-full">
       <h6>
         Welcome to our route planning website! Our UCS and A* algorithm helps
         you find the shortest path between two locations using real-time data
         from Google Maps. Simply enter your starting and destination points and
         let our algorithm do the rest. Remember to click
-        <strong>Update Map</strong> to show the results.
+        <strong>Update Map</strong> to show the results and the estimated
+        distance.
+        <q-space />
+        If the map is showing "For development purposes only" then increase your
+        brightness for the results :D (i've tried many ways to remove that)
       </h6>
     </BaseCard>
+    <div class="bg-red">
+      <q-img
+        :src="fileConfig"
+        fit="contain"
+        width="450px"
+        height="auto"
+        draggable
+      />
+      <q-tooltip anchor="bottom middle" self="top middle">
+        File Config
+      </q-tooltip>
+    </div>
+
     <div class="tw-w-72">
       <h1>Choose Default Map</h1>
       <q-select
@@ -99,6 +116,7 @@
           </h6>
         </div>
       </div>
+      <h6 v-if="refreshRequired" class="text-red">Please refresh the page!</h6>
     </div>
     <!-- Test Map here -->
     <GoogleMaps
@@ -111,9 +129,9 @@
     <div class="q-pa-md q-gutter-sm">
       <q-dialog v-model="promptRefresh" position="top">
         <q-card style="width: 350px">
-          <q-linear-progress :value="1" color="pink" />
+          <q-linear-progress :value="1" color="dark" />
 
-          <q-card-section class="col items-center no-wrap">
+          <q-card-section class="col items-center no-wrap bg-grey-4">
             <div>
               <div class="text-weight-bold">We need to refresh this page</div>
               <div class="text-grey">
@@ -124,7 +142,16 @@
             <q-space />
             <div class="tw-pt-2 tw-flex tw-justify-center tw-gap-x-4">
               <q-btn label="Refresh" @click="refreshPage" rounded />
-              <q-btn label="Later" rounded @click="promptRefresh = false" />
+              <q-btn
+                label="Later"
+                rounded
+                @click="
+                  () => {
+                    promptRefresh = false;
+                    refreshRequired = true;
+                  }
+                "
+              />
             </div>
           </q-card-section>
         </q-card>
@@ -147,6 +174,8 @@ import {
   dataToString,
 } from 'src/composables/useDefaultData';
 
+const fileConfig = 'src/assets/file_config.jpg';
+
 const store = useStore();
 const $q = useQuasar();
 const file = ref<File | null>(null);
@@ -157,7 +186,7 @@ const destOption = computed(() =>
   mapData.value.filter((item) => item !== source.value)
 );
 
-const dialog = ref(false);
+const refreshRequired = ref(false);
 const solver = ref('');
 const defaultOptions = ['Alun Alun Kota Bandung', 'Buah Batu', 'ITB', 'Medan'];
 
@@ -276,7 +305,7 @@ const getFile = async () => {
           solver: solver.value.toString(),
         };
         const response = await axios.post(
-          'http://localhost:5000/solve',
+          'http://jimlyfirdaus.pythonanywhere.com/solve',
           JSON.stringify(data),
           {
             headers: { 'Content-Type': 'application/json' },
@@ -304,7 +333,8 @@ const getFile = async () => {
           switch (axiosError.response.status) {
             case 500:
               Notify.create({
-                message: 'Something wrong with our end. Please check your textfile input (for troubleshoot).',
+                message:
+                  'Something wrong with our end. Please check your textfile input (for troubleshoot).',
               });
               setTimeout(() => {
                 refreshPage();
@@ -336,7 +366,7 @@ const getFile = async () => {
           solver: solver.value.toString(),
         };
         const response = await axios.post(
-          'http://localhost:5000/solve',
+          'http://jimlyfirdaus.pythonanywhere.com/solve',
           JSON.stringify(data),
           {
             headers: { 'Content-Type': 'application/json' },
