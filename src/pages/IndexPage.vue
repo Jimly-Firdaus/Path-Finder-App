@@ -173,8 +173,7 @@ import {
   MEDAN,
   dataToString,
 } from 'src/composables/useDefaultData';
-
-const fileConfig = 'src/assets/file_config.png';
+import fileConfig from 'src/assets/file_config.png'
 
 const store = useStore();
 const $q = useQuasar();
@@ -303,7 +302,7 @@ const getFile = async () => {
           solver: solver.value.toString(),
         };
         const response = await axios.post(
-          'http://jimlyfirdaus.pythonanywhere.com/solve',
+          'https://jimlyfirdaus.pythonanywhere.com/solve',
           JSON.stringify(data),
           {
             headers: { 'Content-Type': 'application/json' },
@@ -360,7 +359,7 @@ const getFile = async () => {
           solver: solver.value.toString(),
         };
         const response = await axios.post(
-          'http://jimlyfirdaus.pythonanywhere.com/solve',
+          'https://jimlyfirdaus.pythonanywhere.com/solve',
           JSON.stringify(data),
           {
             headers: { 'Content-Type': 'application/json' },
