@@ -246,7 +246,6 @@ const handleFileUpload = (file: File) => {
       }
     };
     reader.readAsText(file);
-    console.log(allPosition);
   }
 };
 const promptRefresh = ref(false);
@@ -281,7 +280,6 @@ watch([() => file.value, () => defaultChoice.value], () => {
 
 watchEffect(() => {
   pathRetrieved.value;
-  // console.log(center.value);
 });
 
 const wait = file.value === null ? ref('Ready') : ref(null);
@@ -314,18 +312,14 @@ const getFile = async () => {
         const result = response.data;
         route.value = result[1].split('-').map((x: any) => parseInt(x));
         cost.value = result[0];
-        console.log('route: ' + route.value);
         mapData.value.forEach((ele, index) => {
           if (route.value.includes(index)) {
-            console.log(index);
             pathRetrieved.value.push(allPosition.value[index]);
           }
         });
-        console.log(pathRetrieved.value);
         center.value.lat = pathRetrieved.value[0].latitude;
         center.value.lng = pathRetrieved.value[0].longitude;
         foundRoute.value = true;
-        console.log('Filled arr: ');
         store.dispatch('updatePathRetrieved', pathRetrieved);
       } catch (error) {
         const axiosError = error as AxiosError;
@@ -373,25 +367,20 @@ const getFile = async () => {
           }
         );
         const result = response.data;
-        console.log(result);
+
         route.value = result[1].split('-').map((x: any) => parseInt(x));
         cost.value = result[0];
-        console.log('route: ' + route.value);
-        console.log(mapData.value);
+
         mapData.value.forEach((ele, index) => {
           if (route.value.includes(index)) {
-            console.log(index);
-            console.log(ele);
             pathRetrieved.value.push(allPosition.value[index]);
           }
         });
-        console.log(pathRetrieved.value);
+
         center.value.lat = pathRetrieved.value[0].latitude;
         center.value.lng = pathRetrieved.value[0].longitude;
         foundRoute.value = true;
-        console.log(
-          'Parent Central: ' + center.value.lat + ', ' + center.value.lng
-        );
+
         store.dispatch('updatePathRetrieved', pathRetrieved);
       } finally {
         setTimeout(() => {
