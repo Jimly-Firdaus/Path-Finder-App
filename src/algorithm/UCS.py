@@ -38,14 +38,15 @@ def UCS(adjacency_matrix, total_nodes, nodes_data):
         sorted_simpul_hidup = sorted(simpul_hidup.items(), key=lambda x:x[1])
         sorted_simpul_hidup = dict(sorted_simpul_hidup)
         check = next(iter(sorted_simpul_hidup))
-        simpul_ekspan = int(check[len(check)-1])
+        list_check = check.split("-")
+        simpul_ekspan = int(list_check[len(list_check)-1])
         visited[simpul_ekspan] = True
 
         for i in range (len(adjacency_matrix[simpul_ekspan])):
             if (adjacency_matrix[simpul_ekspan][i] == 1):
                 if (visited[i] == False):
                     distance_now = d_haversine(nodes_data[simpul_ekspan][1][0], nodes_data[simpul_ekspan][1][1], nodes_data[i][1][0], nodes_data[i][1][1])
-                    simpul_hidup[check+str(i)] = simpul_hidup[check] + distance_now
+                    simpul_hidup[check+"-"+str(i)] = simpul_hidup[check] + distance_now
 
         if (visited[finish_node] == True):
             return (check, sorted_simpul_hidup[check])
