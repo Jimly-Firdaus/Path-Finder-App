@@ -1,4 +1,3 @@
-import numpy as np
 from src.algorithm.util.Utility import d_haversine
 
 class AStarNode:
