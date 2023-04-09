@@ -2,7 +2,7 @@
   <GoogleMap
     ref="map"
     api-key="AIzaSyBLrkK67ZokwGfK6v64zcbhpon6jZ757YU"
-    style="width: 100%; height: 25em"
+    style="width: 100%; height: 30em"
     :center="centerVal"
     :zoom="15"
   >
@@ -38,7 +38,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, ref, PropType, watch, getCurrentInstance } from 'vue';
+import {
+  computed,
+  defineProps,
+  ref,
+  PropType,
+  watch,
+  getCurrentInstance,
+} from 'vue';
 import {
   GoogleMap,
   Marker as GoogleMapMarker,
@@ -64,11 +71,11 @@ const props = defineProps({
   cost: {
     type: Number,
     default: 0,
-  }
+  },
 });
 
 const emit = defineEmits<{
-  (e: "update:usedUpdate", value: boolean): void;
+  (e: 'update:usedUpdate', value: boolean): void;
 }>();
 
 console.log('props.path:', props.path);
@@ -94,7 +101,10 @@ const store = useStore();
 const pathRetrieved = computed(() => store.state.pathRetrieved);
 
 const path = computed(() =>
-  pathRetrieved.value.map((p: {latitude: number; longitude: number}) => ({ lat: p.latitude, lng: p.longitude }))
+  pathRetrieved.value.map((p: { latitude: number; longitude: number }) => ({
+    lat: p.latitude,
+    lng: p.longitude,
+  }))
 );
 
 const pathToGoal = ref({
@@ -106,19 +116,16 @@ const pathToGoal = ref({
 });
 const map = ref<InstanceType<typeof GoogleMap>>();
 const polyline = ref<InstanceType<typeof google.maps.Polyline>>();
-watch(
-  [() => centerVal.value, () => pathToGoal.value.path],
-  () => {
-    console.log(props.foundRoute);
-    foundPath.value = props.foundRoute;
-    console.log(pathToGoal.value.path);
-    console.log("-------------------------")
-    emit("update:usedUpdate", true);
-    totalDistance.value = props.cost;
-    // Update the map center
-    map.value?.map?.panTo(centerVal.value);
-  }
-);
+watch([() => centerVal.value, () => pathToGoal.value.path], () => {
+  console.log(props.foundRoute);
+  foundPath.value = props.foundRoute;
+  console.log(pathToGoal.value.path);
+  console.log('-------------------------');
+  emit('update:usedUpdate', true);
+  totalDistance.value = props.cost;
+  // Update the map center
+  map.value?.map?.panTo(centerVal.value);
+});
 
 const updateMap = () => {
   // just to reflect all async changes to sync child with parent
@@ -128,11 +135,11 @@ const updateMap = () => {
   marker2.value = path.value[path.value.length - 1];
   pathToGoal.value.path = path.value;
   console.log(foundPath.value);
-  console.log(centerVal.value.lat + ', '+centerVal.value.lng);
+  console.log(centerVal.value.lat + ', ' + centerVal.value.lng);
 };
 
 const checkArr = () => {
-  console.log("Retrieved len: " + path.value.length);
+  console.log('Retrieved len: ' + path.value.length);
   console.log(path.value);
   console.log(centerVal.value);
 };
