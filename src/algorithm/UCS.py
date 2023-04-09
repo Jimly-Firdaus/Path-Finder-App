@@ -8,7 +8,7 @@
 #Spesifikasi: Menemukan lintasan dengan cost
 
 #DEKLARASI LIBRARY
-from util.Utility import *
+from src.algorithm.util.Utility import *
 
 
 #DEKALRASI DAN IMPLEMENTASI FUNGSI
