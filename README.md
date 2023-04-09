@@ -11,6 +11,7 @@ A* is a more advanced algorithm that uses a heuristic function to guide its sear
 
 # Platform
 This project is deployed at [Github Pages](https://jimly-firdaus.github.io/#/)
+Repository : [Github Pages Repository](https://github.com/Jimly-Firdaus/Jimly-Firdaus.github.io)
 
 Backend webserver: [PythonAnywhere](http://jimlyfirdaus.pythonanywhere.com/)
 
