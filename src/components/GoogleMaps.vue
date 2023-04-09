@@ -38,14 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  defineProps,
-  ref,
-  PropType,
-  watch,
-  getCurrentInstance,
-} from 'vue';
+import { computed, defineProps, ref, PropType, watch } from 'vue';
 import {
   GoogleMap,
   Marker as GoogleMapMarker,
@@ -78,7 +71,6 @@ const emit = defineEmits<{
   (e: 'update:usedUpdate', value: boolean): void;
 }>();
 
-console.log('props.path:', props.path);
 const foundPath = ref(props.foundRoute);
 const centerVal = ref(props.center);
 const totalDistance = ref(props.cost);
@@ -115,12 +107,9 @@ const pathToGoal = ref({
   strokeWeight: 3,
 });
 const map = ref<InstanceType<typeof GoogleMap>>();
-const polyline = ref<InstanceType<typeof google.maps.Polyline>>();
 watch([() => centerVal.value, () => pathToGoal.value.path], () => {
-  console.log(props.foundRoute);
   foundPath.value = props.foundRoute;
-  console.log(pathToGoal.value.path);
-  console.log('-------------------------');
+
   emit('update:usedUpdate', true);
   totalDistance.value = props.cost;
   // Update the map center
@@ -134,30 +123,5 @@ const updateMap = () => {
   marker1.value = path.value[0];
   marker2.value = path.value[path.value.length - 1];
   pathToGoal.value.path = path.value;
-  console.log(foundPath.value);
-  console.log(centerVal.value.lat + ', ' + centerVal.value.lng);
 };
-
-const checkArr = () => {
-  console.log('Retrieved len: ' + path.value.length);
-  console.log(path.value);
-  console.log(centerVal.value);
-};
-
-// const startMarker = {
-//   url: startIcon,
-//   scaledSize: new google.maps.Size(25, 25),
-// };
-
-// const goalMarker = {
-//   url: goalIcon,
-//   scaledSize: new google.maps.Size(25, 25),
-// };
-
-// defineComponent({
-//   components: {
-//     GoogleMap,
-//     GoogleMapMarker,
-//   },
-// });
 </script>

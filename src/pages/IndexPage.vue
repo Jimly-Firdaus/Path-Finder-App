@@ -161,8 +161,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect, watch, Ref } from 'vue';
-import axios, { Axios, AxiosError } from 'axios';
+import { ref, computed, watchEffect, watch } from 'vue';
+import axios, { AxiosError } from 'axios';
 import { Path } from 'src/composables';
 import { useStore } from 'vuex';
 import { useQuasar, Notify } from 'quasar';
