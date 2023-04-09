@@ -19,3 +19,4 @@ def main(text: str, src: str, dest: str, solver: str):
         a_star = AStar(adjacency_matrix, total_nodes, nodes)
         a_star.solve(src, dest)
         return a_star.get_result_route()
+    

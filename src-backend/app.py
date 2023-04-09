@@ -7,7 +7,7 @@ CORS(app)
 
 @app.route('/')
 def index():
-    return 'Hello, World!'
+    return 'Backend Server for Tucil3_13521102_13521140'
 
 @app.route('/solve', methods=['POST'])
 def solve():

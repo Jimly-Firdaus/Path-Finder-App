@@ -10,13 +10,7 @@ class IAStar:
         pass    
 
     #  Get final route from A* solution.
-    #  @return path to goal
+    #  @return path to goal and cost
     @abstractmethod
-    def get_final_route(self):
-        pass
-
-    #  Get total steps taken from A* solution.
-    #  @return total steps taken
-    @abstractmethod
-    def get_steps_taken(self):
+    def get_result_route(self):
         pass
