@@ -21,6 +21,7 @@ def UCS(adjacency_matrix, total_nodes, nodes_data, start_node, _goal_node):
     for i in range(total_nodes):
         visited.append(False)
     
+    # search start node data
     starting_node = 0
     for name, pos in nodes_data:
         if (name == str(start_node)):
@@ -32,7 +33,7 @@ def UCS(adjacency_matrix, total_nodes, nodes_data, start_node, _goal_node):
     for name, pos in nodes_data:
         if (name == str(_goal_node)):
             break
-        goal_node += 1
+        finish_node += 1
 
     simpul_hidup = {str(starting_node) : 0}
     while (bool(simpul_hidup) == True):
