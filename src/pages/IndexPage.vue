@@ -30,7 +30,6 @@
       <q-file
         clearable
         :disable="defaultChoice !== null"
-        :loading="file === null"
         accept=".txt"
         color="teal"
         filled
@@ -64,7 +63,10 @@
         <BaseBtn
           label="Find!"
           @click="getFile"
-          :disable="source.length === 0 && dest.length === 0"
+          :disable="
+            (source.length === 0 && dest.length === 0) ||
+            (defaultChoice === null && file === null)
+          "
         ></BaseBtn>
         <div
           class="tw-p-2 tw-rounded-md"
@@ -88,7 +90,29 @@
       :path="pathRetrieved"
       :center="center"
       :found-route="foundRoute"
+      :cost="cost"
+      @update:used-update="handleRefreshPrompt"
     />
+      <div class="q-pa-md q-gutter-sm">
+        <q-dialog v-model="promptRefresh" position="top">
+          <q-card style="width: 350px">
+            <q-linear-progress :value="1" color="pink" />
+  
+            <q-card-section class="col items-center no-wrap">
+              <div>
+                <div class="text-weight-bold">We need to refresh this page</div>
+                <div class="text-grey">This is needed to restart the Polyline</div>
+              </div>
+  
+              <q-space />
+              <div class="tw-pt-2 tw-flex tw-justify-center tw-gap-x-4">
+                <q-btn label="Refresh" @click="refreshPage" rounded/>
+                <q-btn label="Later" rounded @click="promptRefresh = false"/>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+      </div>
   </q-page>
 </template>
 
@@ -116,11 +140,14 @@ const destOption = computed(() =>
   mapData.value.filter((item) => item !== source.value)
 );
 
+const dialog = ref(false);
+
 const defaultOptions = ['Alun Alun Kota Bandung', 'Buah Batu', 'ITB', 'Medan'];
 
 const defaultChoice = ref<string | null>(null);
 const defaultData = ref<string>('');
 
+const allPosition = ref<Path[]>([]);
 const handleDefaultOptions = (val: any) => {
   switch (val) {
     case 'Alun Alun Kota Bandung':
@@ -135,20 +162,29 @@ const handleDefaultOptions = (val: any) => {
     case 'Medan':
       defaultData.value = dataToString(MEDAN);
       break;
+    default:
+      defaultData.value = '';
+      break;
   }
   const lines = defaultData.value.split('\n');
   mapData.value = lines.filter(
     (_, index) => index > 0 && index % 2 !== 0 && index < parseInt(lines[0]) * 2
   );
+  for (let i = 1; i <= parseInt(lines[0]); i++) {
+    const latLongLine = lines[i * 2];
+    const latLong = latLongLine.split(' ').map((x) => parseFloat(x));
+    allPosition.value.push({ latitude: latLong[0], longitude: latLong[1] });
+  }
 };
 
 const updateDestOption = () => {
   dest.value = '';
 };
 
-let allPosition: Path[] = [];
 const handleFileUpload = (file: File) => {
   if (file) {
+    mapData.value = [];
+    allPosition.value = [];
     const reader = new FileReader();
     reader.onload = (event) => {
       const text = event.target?.result as string;
@@ -160,17 +196,27 @@ const handleFileUpload = (file: File) => {
       for (let i = 1; i <= parseInt(lines[0]); i++) {
         const latLongLine = lines[i * 2];
         const latLong = latLongLine.split(' ').map((x) => parseFloat(x));
-        allPosition.push({ latitude: latLong[0], longitude: latLong[1] });
+        allPosition.value.push({ latitude: latLong[0], longitude: latLong[1] });
       }
     };
     reader.readAsText(file);
     console.log(allPosition);
   }
 };
+const promptRefresh = ref(false);
+const handleRefreshPrompt = (refresh: boolean) => {
+  if (refresh) {
+    promptRefresh.value = true;
+  }
+};
+
+const refreshPage = () => {
+  location.reload();
+}
 
 const pathRetrieved = ref<Path[]>([]);
 const route = ref<number[]>([]);
-const cost = ref<number>();
+const cost = ref<number>(0);
 const foundRoute = ref(false);
 const center = ref(
   pathRetrieved.value.length > 0
@@ -181,24 +227,22 @@ const center = ref(
     : { lat: -6.9174639, lng: 107.61912280000001 }
 );
 
-watch(
-  () => file.value,
-  () => {
-    if (file.value === null) {
-      wait.value = 'Ready';
-    }
+watch([() => file.value, () => defaultChoice.value], () => {
+  if (file.value === null && defaultChoice.value === null) {
+    wait.value = 'Ready';
   }
-);
+});
 
 watchEffect(() => {
   pathRetrieved.value;
-  console.log(center.value);
+  // console.log(center.value);
 });
 
 const wait = file.value === null ? ref('Ready') : ref(null);
 
 const getFile = async () => {
   // TODO: refactor the same block code
+  pathRetrieved.value = [];
   if (file.value) {
     wait.value = 'Busy';
     const reader = new FileReader();
@@ -223,19 +267,18 @@ const getFile = async () => {
         const result = response.data;
         route.value = result[1].split('-').map((x: any) => parseInt(x));
         cost.value = result[0];
-        pathRetrieved.value = [];
         console.log('route: ' + route.value);
         mapData.value.forEach((ele, index) => {
           if (route.value.includes(index)) {
             console.log(index);
-            pathRetrieved.value.push(allPosition[index]);
+            pathRetrieved.value.push(allPosition.value[index]);
           }
         });
+        console.log(pathRetrieved.value);
         center.value.lat = pathRetrieved.value[0].latitude;
         center.value.lng = pathRetrieved.value[0].longitude;
         foundRoute.value = true;
         console.log('Filled arr: ');
-        console.log(pathRetrieved.value);
         store.dispatch('updatePathRetrieved', pathRetrieved);
       } finally {
         setTimeout(() => {
@@ -247,6 +290,7 @@ const getFile = async () => {
     reader.readAsText(file.value);
   } else {
     if (defaultChoice.value) {
+      defaultChoice.value = null;
       wait.value = 'Busy';
       try {
         $q.loading.show({
@@ -266,30 +310,35 @@ const getFile = async () => {
           }
         );
         const result = response.data;
+        console.log(result);
         route.value = result[1].split('-').map((x: any) => parseInt(x));
         cost.value = result[0];
-        pathRetrieved.value = [];
         console.log('route: ' + route.value);
+        console.log(mapData.value);
         mapData.value.forEach((ele, index) => {
           if (route.value.includes(index)) {
             console.log(index);
-            pathRetrieved.value.push(allPosition[index]);
+            console.log(ele);
+            pathRetrieved.value.push(allPosition.value[index]);
           }
         });
+        console.log(pathRetrieved.value);
         center.value.lat = pathRetrieved.value[0].latitude;
         center.value.lng = pathRetrieved.value[0].longitude;
         foundRoute.value = true;
-        console.log('Filled arr: ');
-        console.log(pathRetrieved.value);
+        console.log(
+          'Parent Central: ' + center.value.lat + ', ' + center.value.lng
+        );
         store.dispatch('updatePathRetrieved', pathRetrieved);
       } finally {
         setTimeout(() => {
           $q.loading.hide();
           wait.value = 'Finished';
         }, 1500);
-      };
+      }
     }
   }
+  allPosition.value = [];
 };
 </script>
 
