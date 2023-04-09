@@ -13,7 +13,7 @@
         brightness for the results :D (i've tried many ways to remove that)
       </h6>
     </BaseCard>
-    <div class="bg-red">
+    <div>
       <q-img
         :src="fileConfig"
         fit="contain"
@@ -174,7 +174,7 @@ import {
   dataToString,
 } from 'src/composables/useDefaultData';
 
-const fileConfig = 'src/assets/file_config.jpg';
+const fileConfig = 'src/assets/file_config.png';
 
 const store = useStore();
 const $q = useQuasar();
