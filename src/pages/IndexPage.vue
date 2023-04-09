@@ -1,14 +1,12 @@
 <template>
-  <q-page
-    class="row items-center tw-px-2 bg-grey-3 justify-center tw-gap-4 font-quicksand"
-  >
+  <q-page class="row items-center tw-px-2 bg-grey-3 justify-center tw-gap-4">
     <BaseCard shadow :border-width="2" class="tw-p-2 tw-w-full">
-      <h6 class="font-quicksand">
+      <h6>
         Welcome to our route planning website! Our UCS and A* algorithm helps
         you find the shortest path between two locations using real-time data
         from Google Maps. Simply enter your starting and destination points and
-        let our algorithm do the rest. With our website, you can save time and
-        effort by always taking the most efficient route.
+        let our algorithm do the rest. Remember to click
+        <strong>Update Map</strong> to show the results.
       </h6>
     </BaseCard>
     <div class="tw-w-72">
@@ -81,7 +79,7 @@
           @click="getFile"
           :disable="
             (source.length === 0 && dest.length === 0) ||
-            (defaultChoice === null && file === null) || 
+            (defaultChoice === null && file === null) ||
             solver.length === 0
           "
         ></BaseBtn>
@@ -137,10 +135,10 @@
 
 <script setup lang="ts">
 import { ref, computed, watchEffect, watch, Ref } from 'vue';
-import axios, { AxiosError } from 'axios';
+import axios, { Axios, AxiosError } from 'axios';
 import { Path } from 'src/composables';
 import { useStore } from 'vuex';
-import { useQuasar } from 'quasar';
+import { useQuasar, Notify } from 'quasar';
 import {
   ALUN_ALUN_BANDUNG,
   BUAH_BATU,
@@ -300,8 +298,21 @@ const getFile = async () => {
         foundRoute.value = true;
         console.log('Filled arr: ');
         store.dispatch('updatePathRetrieved', pathRetrieved);
-      } 
-      finally {
+      } catch (error) {
+        const axiosError = error as AxiosError;
+        if (axiosError.response) {
+          switch (axiosError.response.status) {
+            case 500:
+              Notify.create({
+                message: 'Something wrong with our end. Please check your textfile input (for troubleshoot).',
+              });
+              setTimeout(() => {
+                refreshPage();
+              }, 3000);
+              break;
+          }
+        }
+      } finally {
         setTimeout(() => {
           $q.loading.hide();
           wait.value = 'Finished';
