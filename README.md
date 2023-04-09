@@ -2,40 +2,46 @@
 
 Pathfinding with UCS and A* algorithm
 
-## Install the dependencies
+# Project Description
+This project explores the use of two popular pathfinding algorithms: Uniform Cost Search (UCS) and A* (A-star). Both algorithms are used to find the shortest path between two points in a graph, but they use different strategies to achieve this goal.
+
+UCS is a simple algorithm that expands nodes in order of their path cost from the start node. It guarantees to find the shortest path between the start and goal nodes, but it can be slow for large graphs.
+
+A* is a more advanced algorithm that uses a heuristic function to guide its search. This allows it to find the shortest path more quickly than UCS, but it requires a good heuristic function to work effectively.
+
+# Platform
+This project is deployed at [Github Pages](https://jimly-firdaus.github.io/#/)
+
+Backend webserver: [PythonAnywhere](http://jimlyfirdaus.pythonanywhere.com/)
+
+# How to run locally
+To run this project locally you will need to install:
+* pip
+* node
+
+Clone this repository. Move to the root of this project then,
 ```bash
-yarn
-# or
-npm install
+npm ci          # for clean install
 ```
-
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+then
 ```bash
-quasar dev
+pip install flask
+pip install flask_cors
+pip install numpy
 ```
-
-
-### Lint the files
+After that on the root of this repository, run:
 ```bash
-yarn lint
-# or
-npm run lint
+quasar dev      # this will open browser at port 9000
 ```
-
-
-### Format the files
+Then cd to `src-backend` and run:
 ```bash
-yarn format
-# or
-npm run format
+flask run       # this will start backend server (port 5000)
 ```
+Change the `axios` post request inside `src/pages/IndexPage.vue` to `http://localhost:5000/solve` if you want to test the backend manually,
 
+# Additional Information
+There are 4 test case inside `test` folder that you can use (upload it to the web).
 
-
-### Build the app for production
-```bash
-quasar build
-```
-
-### Customize the configuration
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
+# Author
+* 13521102 Jimly Firdaus
+* 13521140 Ryan Samuel Chandra
