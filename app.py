@@ -15,9 +15,10 @@ def solve():
     text = data['text']
     src = data['src'].strip()
     dest = data['dest'].strip()
+    solver = data['solver'].strip()
     print(f"src: ----{src}----")
     print(f"dest: ----{dest}----")
-    cost, route = main(text, str(src), str(dest))
+    cost, route = main(text, str(src), str(dest), str(solver))
     result = (cost, route)
     return jsonify(result)
 
