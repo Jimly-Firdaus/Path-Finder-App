@@ -5,6 +5,6 @@ export interface Path {
 
 export interface AreaData {
   numLocations: number;
-  locations: {name: string, coordinates: number[]}[];
-  adjacencyMatrix: number[][]
+  locations: { name: string; coordinates: number[] }[];
+  adjacencyMatrix: number[][];
 }

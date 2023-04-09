@@ -43,7 +43,7 @@ const props = withDefaults(
 <style lang="scss" scoped>
 .q-btn {
   background-color: #007bff;
-  color:#ffffff;
+  color: #ffffff;
   &.disable {
     background-color: $grey-9;
   }
