@@ -42,6 +42,22 @@
           <q-icon name="cloud_upload" />
         </template>
       </q-file>
+      <div class="q-gutter-sm">
+        <q-radio
+          v-model="solver"
+          checked-icon="task_alt"
+          unchecked-icon="panorama_fish_eye"
+          val="UCS"
+          label="UCS"
+        />
+        <q-radio
+          v-model="solver"
+          checked-icon="task_alt"
+          unchecked-icon="panorama_fish_eye"
+          val="A*"
+          label="A*"
+        />
+      </div>
     </div>
     <div class="tw-ml-4 tw-gap-4 tw-w-72">
       <q-select
@@ -65,7 +81,8 @@
           @click="getFile"
           :disable="
             (source.length === 0 && dest.length === 0) ||
-            (defaultChoice === null && file === null)
+            (defaultChoice === null && file === null) || 
+            solver.length === 0
           "
         ></BaseBtn>
         <div
@@ -93,32 +110,34 @@
       :cost="cost"
       @update:used-update="handleRefreshPrompt"
     />
-      <div class="q-pa-md q-gutter-sm">
-        <q-dialog v-model="promptRefresh" position="top">
-          <q-card style="width: 350px">
-            <q-linear-progress :value="1" color="pink" />
-  
-            <q-card-section class="col items-center no-wrap">
-              <div>
-                <div class="text-weight-bold">We need to refresh this page</div>
-                <div class="text-grey">This is needed to restart the Polyline</div>
+    <div class="q-pa-md q-gutter-sm">
+      <q-dialog v-model="promptRefresh" position="top">
+        <q-card style="width: 350px">
+          <q-linear-progress :value="1" color="pink" />
+
+          <q-card-section class="col items-center no-wrap">
+            <div>
+              <div class="text-weight-bold">We need to refresh this page</div>
+              <div class="text-grey">
+                This is needed to restart the Polyline
               </div>
-  
-              <q-space />
-              <div class="tw-pt-2 tw-flex tw-justify-center tw-gap-x-4">
-                <q-btn label="Refresh" @click="refreshPage" rounded/>
-                <q-btn label="Later" rounded @click="promptRefresh = false"/>
-              </div>
-            </q-card-section>
-          </q-card>
-        </q-dialog>
-      </div>
+            </div>
+
+            <q-space />
+            <div class="tw-pt-2 tw-flex tw-justify-center tw-gap-x-4">
+              <q-btn label="Refresh" @click="refreshPage" rounded />
+              <q-btn label="Later" rounded @click="promptRefresh = false" />
+            </div>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+    </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watchEffect, watch, Ref } from 'vue';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Path } from 'src/composables';
 import { useStore } from 'vuex';
 import { useQuasar } from 'quasar';
@@ -141,7 +160,7 @@ const destOption = computed(() =>
 );
 
 const dialog = ref(false);
-
+const solver = ref('');
 const defaultOptions = ['Alun Alun Kota Bandung', 'Buah Batu', 'ITB', 'Medan'];
 
 const defaultChoice = ref<string | null>(null);
@@ -212,7 +231,7 @@ const handleRefreshPrompt = (refresh: boolean) => {
 
 const refreshPage = () => {
   location.reload();
-}
+};
 
 const pathRetrieved = ref<Path[]>([]);
 const route = ref<number[]>([]);
@@ -256,6 +275,7 @@ const getFile = async () => {
           text,
           src: source.value.toString(),
           dest: dest.value.toString(),
+          solver: solver.value.toString(),
         };
         const response = await axios.post(
           'http://localhost:5000/solve',
@@ -280,7 +300,8 @@ const getFile = async () => {
         foundRoute.value = true;
         console.log('Filled arr: ');
         store.dispatch('updatePathRetrieved', pathRetrieved);
-      } finally {
+      } 
+      finally {
         setTimeout(() => {
           $q.loading.hide();
           wait.value = 'Finished';
@@ -301,6 +322,7 @@ const getFile = async () => {
           text,
           src: source.value.toString(),
           dest: dest.value.toString(),
+          solver: solver.value.toString(),
         };
         const response = await axios.post(
           'http://localhost:5000/solve',
