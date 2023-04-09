@@ -51,8 +51,8 @@ import EssentialLink, { EssentialLinkProps } from 'components/EssentialLink.vue'
 
 const essentialLinks: EssentialLinkProps[] = [
   {
-    title: 'Github Page',
-    caption: 'github.com/Jimly-Firdaus',
+    title: 'Source Code',
+    caption: 'Github',
     icon: 'code',
     link: 'https://github.com/Jimly-Firdaus/Tucil3_13521102_13521140'
   },
