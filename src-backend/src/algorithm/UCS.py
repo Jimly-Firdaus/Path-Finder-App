@@ -40,14 +40,15 @@ def UCS(adjacency_matrix, total_nodes, nodes_data, start_node, _goal_node):
         sorted_simpul_hidup = sorted(simpul_hidup.items(), key=lambda x:x[1])
         sorted_simpul_hidup = dict(sorted_simpul_hidup)
         check = next(iter(sorted_simpul_hidup))
-        simpul_ekspan = int(check[len(check)-1])
+        list_check = check.split("-")
+        simpul_ekspan = int(list_check[len(list_check)-1])
         visited[simpul_ekspan] = True
 
         for i in range (len(adjacency_matrix[simpul_ekspan])):
             if (adjacency_matrix[simpul_ekspan][i] == 1):
                 if (visited[i] == False):
                     distance_now = d_haversine(nodes_data[simpul_ekspan][1][0], nodes_data[simpul_ekspan][1][1], nodes_data[i][1][0], nodes_data[i][1][1])
-                    simpul_hidup[check+str(i)] = simpul_hidup[check] + distance_now
+                    simpul_hidup[check+"-"+str(i)] = simpul_hidup[check] + distance_now
 
         if (visited[finish_node] == True):
             return (check, sorted_simpul_hidup[check])
@@ -55,7 +56,7 @@ def UCS(adjacency_matrix, total_nodes, nodes_data, start_node, _goal_node):
             del simpul_hidup[check]
 
 
-# #TESTING
+#TESTING
 # total_nodes, nodes, adjacency_matrix = parse_file('test/test_parser.txt')
 # print(f'Total nodes: {total_nodes}')
 # print('Nodes:')
@@ -67,9 +68,9 @@ def UCS(adjacency_matrix, total_nodes, nodes_data, start_node, _goal_node):
 # print(adjacency_matrix)
 # print("\n")
 
-# path, cost = UCS (adjacency_matrix, total_nodes, nodes)
+# path, cost = UCS (adjacency_matrix, total_nodes, nodes, "dest_1", "dest_5")
 # print("\nJalur yang ditempuh: " + str(path))
-# print("Biaya: %.2f" % cost) 
+# print("Biaya: " + str(cost)) 
 
 #REFERENCES
 # footballers_goals = {'Eusebio': 120, 'Cruyff': 104, 'Pele': 150, 'Ronaldo': 132, 'Messi': 125}
