@@ -16,6 +16,10 @@ Repository : [Github Pages Repository](https://github.com/Jimly-Firdaus/Jimly-Fi
 
 Backend webserver: [PythonAnywhere](http://jimlyfirdaus.pythonanywhere.com/)
 
+# Web View
+![image](https://user-images.githubusercontent.com/101716223/230827648-0da24695-2fc2-4c74-9973-76aed1aef6ab.png)
+
+
 # How to run locally
 To run this project locally you will need to install:
 * pip
