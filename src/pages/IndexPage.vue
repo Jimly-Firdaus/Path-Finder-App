@@ -6,8 +6,8 @@
         you find the shortest path between two locations using real-time data
         from Google Maps. Simply enter your starting and destination points and
         let our algorithm do the rest. Remember to click
-        <strong>Update Map</strong> to show the results and the estimated
-        distance.
+        <strong>Update Map</strong> (bottom of this page) to show the results
+        and the estimated distance.
         <q-space />
         If the map is showing "For development purposes only" then increase your
         brightness for the results :D (i've tried many ways to remove that)
@@ -107,6 +107,8 @@
               ? 'bg-grey-4'
               : wait === 'Busy'
               ? 'bg-red'
+              : wait === 'Infinite Loop'
+              ? 'bg-red'
               : 'bg-green'
           "
         >
@@ -121,6 +123,7 @@
     <!-- Test Map here -->
     <GoogleMaps
       :path="pathRetrieved"
+      :full-path="allPosition"
       :center="center"
       :found-route="foundRoute"
       :cost="cost"
@@ -173,7 +176,7 @@ import {
   MEDAN,
   dataToString,
 } from 'src/composables/useDefaultData';
-import fileConfig from 'src/assets/file_config.png'
+import fileConfig from 'src/assets/file_config.png';
 
 const store = useStore();
 const $q = useQuasar();
@@ -306,6 +309,7 @@ const getFile = async () => {
           JSON.stringify(data),
           {
             headers: { 'Content-Type': 'application/json' },
+            timeout: 10000,
           }
         );
         const result = response.data;
@@ -320,25 +324,34 @@ const getFile = async () => {
         center.value.lng = pathRetrieved.value[0].longitude;
         foundRoute.value = true;
         store.dispatch('updatePathRetrieved', pathRetrieved);
+        store.dispatch('updateAllPosition', allPosition);
       } catch (error) {
         const axiosError = error as AxiosError;
         if (axiosError.response) {
           switch (axiosError.response.status) {
             case 500:
-              Notify.create({
-                message:
-                  'Something wrong with our end. Please check your textfile input (for troubleshoot).',
-              });
-              setTimeout(() => {
-                refreshPage();
-              }, 3000);
+              $q.loading.hide();
+              wait.value = 'Infinite Loop';
+              let i = 5;
+              const intervalId = setInterval(() => {
+                Notify.create({
+                  message: `Something wrong with your file. Please match with the given config! Refreshing in ${i}`,
+                });
+                i--;
+                if (i < 1) {
+                  clearInterval(intervalId);
+                  refreshPage();
+                }
+              }, 1000);
               break;
           }
         }
       } finally {
         setTimeout(() => {
           $q.loading.hide();
-          wait.value = 'Finished';
+          if (wait.value !== 'Infinite Loop') {
+            wait.value = 'Finished';
+          }
         }, 1500);
       }
     };
@@ -379,8 +392,8 @@ const getFile = async () => {
         center.value.lat = pathRetrieved.value[0].latitude;
         center.value.lng = pathRetrieved.value[0].longitude;
         foundRoute.value = true;
-
         store.dispatch('updatePathRetrieved', pathRetrieved);
+        store.dispatch('updateAllPosition', allPosition);
       } finally {
         setTimeout(() => {
           $q.loading.hide();
@@ -389,7 +402,6 @@ const getFile = async () => {
       }
     }
   }
-  allPosition.value = [];
 };
 </script>
 
