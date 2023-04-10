@@ -25,14 +25,16 @@
       @dragend="updateGoalPos"
     />
     <template v-if="foundPath">
-      <Polyline :options="pathToGoal" />
+      <Polyline :options="pathToGoal" :z-index="4" geodesic />
+      <!-- <Polyline :options="allPath" :z-index="1" geodesic /> -->
+      <Polygon :options="allPath" :z-index="1"/>
     </template>
   </GoogleMap>
   <div class="tw-flex tw-flex-col tw-items-center">
     <template v-if="foundPath">
       <h3>Estimated: {{ cost }} km</h3>
     </template>
-    <BaseBtn label="Update Map" size="md" class="tw-w-36" @click="updateMap" />
+    <BaseBtn label="Update Map" size="md" class="tw-w-36" @click="updateMap" :disable="path.length === 0"/>
   </div>
   <!-- <BaseBtn label="Check Arr" size="md" @click="checkArr" /> -->
 </template>
@@ -43,6 +45,7 @@ import {
   GoogleMap,
   Marker as GoogleMapMarker,
   Polyline,
+  Polygon
 } from 'vue3-google-map';
 import { MapMouseEvent } from 'google.maps';
 import { Path } from 'src/composables';
@@ -50,6 +53,10 @@ import { useStore } from 'vuex';
 
 const props = defineProps({
   path: {
+    type: Array as PropType<Path[]>,
+    required: true,
+  },
+  fullPath: {
     type: Array as PropType<Path[]>,
     required: true,
   },
@@ -91,6 +98,7 @@ const updateGoalPos = (event: MapMouseEvent) => {
 const store = useStore();
 
 const pathRetrieved = computed(() => store.state.pathRetrieved);
+const allPosition = computed(() => store.state.allPosition);
 
 const path = computed(() =>
   pathRetrieved.value.map((p: { latitude: number; longitude: number }) => ({
@@ -99,13 +107,30 @@ const path = computed(() =>
   }))
 );
 
+const fullPath = computed(() =>
+  allPosition.value.map((p: { latitude: number; longitude: number }) => ({
+    lat: p.latitude,
+    lng: p.longitude,
+  }))
+);
+
 const pathToGoal = ref({
   path: path.value,
   geodesic: true,
-  strokeColor: '#000080',
-  strokeOpacity: 0.8,
-  strokeWeight: 3,
+  strokeColor: '#000000',
+  strokeOpacity: 1,
+  strokeWeight: 5,
 });
+
+const allPath = ref({
+  path: fullPath.value,
+  geodesic: true,
+  strokeColor: '#F50000',
+  strokeOpacity: 0.3,
+  strokeWeight: 2,
+  fillColor: '#90EE90',
+});
+
 const map = ref<InstanceType<typeof GoogleMap>>();
 watch([() => centerVal.value, () => pathToGoal.value.path], () => {
   foundPath.value = props.foundRoute;
@@ -119,9 +144,11 @@ watch([() => centerVal.value, () => pathToGoal.value.path], () => {
 const updateMap = () => {
   // just to reflect all async changes to sync child with parent
   pathToGoal.value.path = [{}];
+  allPath.value.path = [{}];
   centerVal.value = props.center;
   marker1.value = path.value[0];
   marker2.value = path.value[path.value.length - 1];
   pathToGoal.value.path = path.value;
+  allPath.value.path = fullPath.value;
 };
 </script>
