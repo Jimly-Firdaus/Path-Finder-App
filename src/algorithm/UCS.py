@@ -12,7 +12,7 @@ from util.Utility import *
 
 
 #DEKALRASI DAN IMPLEMENTASI FUNGSI
-def UCS(adjacency_matrix, total_nodes, nodes_data):
+def UCS(adjacency_matrix, total_nodes, nodes_data, start_node, _goal_node):
     #Fungsi untuk ...
 #KAMUS LOKAL
     #...
@@ -21,17 +21,19 @@ def UCS(adjacency_matrix, total_nodes, nodes_data):
     for i in range(total_nodes):
         visited.append(False)
     
-    starting_node = int(input("Masukkan simpul asal: "))
-    while (starting_node < 0 or starting_node > total_nodes-1):
-        print("\nMasukan Anda tidak valid!")
-        print("Mohon masukkan angka antara 0 sampai dengan " + str(total_nodes-1))
-        starting_node = int(input("Masukkan simpul asal: "))
-    
-    finish_node = int(input("\nMasukkan simpul tujuan: "))
-    while (finish_node < 0 or finish_node > total_nodes-1 or finish_node == starting_node):
-        print("\nMasukan Anda tidak valid!")
-        print("Mohon masukkan angka antara 0 sampai dengan " + str(total_nodes-1) + " kecuali " + str(starting_node))
-        finish_node = int(input("Masukkan simpul tujuan: "))
+    # search start node data
+    starting_node = 0
+    for name, pos in nodes_data:
+        if (name == str(start_node)):
+            break
+        starting_node += 1
+
+    # search goal node data
+    finish_node = 0
+    for name, pos in nodes_data:
+        if (name == str(_goal_node)):
+            break
+        finish_node += 1
 
     simpul_hidup = {str(starting_node) : 0}
     while (bool(simpul_hidup) == True):
@@ -66,9 +68,9 @@ print('Adjacency matrix:')
 print(adjacency_matrix)
 print("\n")
 
-path, cost = UCS (adjacency_matrix, total_nodes, nodes)
+path, cost = UCS (adjacency_matrix, total_nodes, nodes, "dest_1", "dest_5")
 print("\nJalur yang ditempuh: " + str(path))
-print("Biaya: %.2f" % cost) 
+print("Biaya: " + str(cost)) 
 
 #REFERENCES
 # footballers_goals = {'Eusebio': 120, 'Cruyff': 104, 'Pele': 150, 'Ronaldo': 132, 'Messi': 125}
