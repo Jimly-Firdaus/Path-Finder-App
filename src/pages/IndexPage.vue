@@ -285,7 +285,7 @@ watchEffect(() => {
 });
 
 const wait = file.value === null ? ref('Ready') : ref(null);
-
+const pathInString = ref("");
 const getFile = async () => {
   // TODO: refactor the same block code
   pathRetrieved.value = [];
@@ -315,16 +315,21 @@ const getFile = async () => {
         const result = response.data;
         route.value = result[1].split('-').map((x: any) => parseInt(x));
         cost.value = result[0];
+        route.value.forEach((ele, index) => {
+          pathInString.value += mapData.value[ele] + " -> ";
+        })
         mapData.value.forEach((ele, index) => {
           if (route.value.includes(index)) {
             pathRetrieved.value.push(allPosition.value[index]);
           }
         });
+        pathInString.value = pathInString.value.slice(0, -3);
         center.value.lat = pathRetrieved.value[0].latitude;
         center.value.lng = pathRetrieved.value[0].longitude;
         foundRoute.value = true;
         store.dispatch('updatePathRetrieved', pathRetrieved);
         store.dispatch('updateAllPosition', allPosition);
+        store.dispatch('updatePathInString', pathInString);
       } catch (error) {
         const axiosError = error as AxiosError;
         if (axiosError.response) {
@@ -382,18 +387,21 @@ const getFile = async () => {
 
         route.value = result[1].split('-').map((x: any) => parseInt(x));
         cost.value = result[0];
-
+        route.value.forEach((ele, index) => {
+          pathInString.value += mapData.value[ele] + " -> ";
+        })
         mapData.value.forEach((ele, index) => {
           if (route.value.includes(index)) {
             pathRetrieved.value.push(allPosition.value[index]);
           }
         });
-
+        pathInString.value = pathInString.value.slice(0, -3);
         center.value.lat = pathRetrieved.value[0].latitude;
         center.value.lng = pathRetrieved.value[0].longitude;
         foundRoute.value = true;
         store.dispatch('updatePathRetrieved', pathRetrieved);
         store.dispatch('updateAllPosition', allPosition);
+        store.dispatch('updatePathInString', pathInString);
       } finally {
         setTimeout(() => {
           $q.loading.hide();

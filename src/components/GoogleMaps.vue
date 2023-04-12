@@ -26,17 +26,16 @@
     />
     <template v-if="foundPath">
       <Polyline :options="pathToGoal" :z-index="4" geodesic />
-      <!-- <Polyline :options="allPath" :z-index="1" geodesic /> -->
       <Polygon :options="allPath" :z-index="1"/>
     </template>
   </GoogleMap>
   <div class="tw-flex tw-flex-col tw-items-center">
     <template v-if="foundPath">
       <h3>Estimated: {{ cost }} km</h3>
+      <h3>Path: <strong>{{ pathInString }}</strong></h3>
     </template>
     <BaseBtn label="Update Map" size="md" class="tw-w-36" @click="updateMap" :disable="path.length === 0"/>
   </div>
-  <!-- <BaseBtn label="Check Arr" size="md" @click="checkArr" /> -->
 </template>
 
 <script setup lang="ts">
@@ -99,6 +98,7 @@ const store = useStore();
 
 const pathRetrieved = computed(() => store.state.pathRetrieved);
 const allPosition = computed(() => store.state.allPosition);
+const pathInString = computed(() => store.state.pathInString);
 
 const path = computed(() =>
   pathRetrieved.value.map((p: { latitude: number; longitude: number }) => ({
