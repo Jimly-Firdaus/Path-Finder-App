@@ -43,7 +43,7 @@ Then cd to `src-backend` and run:
 ```bash
 flask run       # this will start backend server (port 5000)
 ```
-Change the `axios` post request inside `src/pages/IndexPage.vue` to `http://localhost:5000/solve` if you want to test the backend manually,
+Change the `axios` post request inside `src/pages/IndexPage.vue` to `http://localhost:5000/solve` if you want to test the backend manually.
 
 # Additional Information
 There are 4 test case inside `test` folder that you can use (upload it to the web).
